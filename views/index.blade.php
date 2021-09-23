@@ -9,7 +9,7 @@
                         <div class="blog-grid-system">
                             <div class="row">
                                 @foreach($posts as $post)
-                                    {{ get_template_part($post, 'post/content') }}
+                                    {{ get_template_part($post, 'content') }}
                                 @endforeach
                             </div>
                         </div><!-- end blog-grid-system -->

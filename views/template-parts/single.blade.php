@@ -1,6 +1,11 @@
 @extends('juzaweb::layouts.frontend')
 
 @section('content')
+    @php
+        $tags = $post->getTaxonomies('tags', 5);
+        $categories = $post->getTaxonomies('categories', 1);
+        $related = $post->getRelatedPosts(2, 'categories');
+    @endphp
 
     <section class="section single-wrapper">
         <div class="container">
@@ -9,26 +14,27 @@
                     <div class="page-wrapper">
                         <div class="blog-title-area text-center">
                             <ol class="breadcrumb hidden-xs-down">
-                                <li class="breadcrumb-item"><a href="#">Home</a></li>
-                                <li class="breadcrumb-item"><a href="#">Blog</a></li>
+                                <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
                                 <li class="breadcrumb-item active">{{ $post->getTitle() }}</li>
                             </ol>
 
-                            <span class="color-orange"><a href="tech-category-01.html" title="">Technology</a></span>
+                            @foreach($categories as $category)
+                            <span class="color-orange"><a href="{{ $category->getLink() }}" title="">{{ $category->getName() }}</a></span>
+                            @endforeach
 
                             <h3>{{ $post->getTitle() }}</h3>
 
                             <div class="blog-meta big-meta">
                                 <small>
-                                    <a href="" title="">21 July, 2017</a>
+                                    <a href="" title="">{{ $post->getCreatedDate() }}</a>
                                 </small>
 
                                 <small>
-                                    <a href="" title="">by Jessica</a>
+                                    <a href="" title="">by {{ $post->getCreatedByName() }}</a>
                                 </small>
 
                                 <small>
-                                    <a href="" title=""><i class="fa fa-eye"></i> 2344</a>
+                                    <a href="" title=""><i class="fa fa-eye"></i> {{ $post->views }}</a>
                                 </small>
 
                             </div><!-- end meta -->
@@ -38,6 +44,7 @@
                                     <li><a href="#" class="fb-button btn btn-primary"><i class="fa fa-facebook"></i>
                                             <span class="down-mobile">Share on Facebook</span></a>
                                     </li>
+
                                     <li>
                                         <a href="#" class="tw-button btn btn-primary"><i class="fa fa-twitter"></i>
                                             <span class="down-mobile">Tweet on Twitter</span></a>
@@ -59,11 +66,13 @@
 
                         <div class="blog-title-area">
                             <div class="tag-cloud-single">
-                                <span>Tags</span>
-                                <small><a href="#" title="">lifestyle</a></small>
-                                <small><a href="#" title="">colorful</a></small>
-                                <small><a href="#" title="">trending</a></small>
-                                <small><a href="#" title="">another tag</a></small>
+                                @if($tags->isNotEmpty())
+                                    <span>Tags</span>
+                                @endif
+
+                                @foreach($tags as $tag)
+                                <small><a href="#" title="">{{ $tag->getName() }}</a></small>
+                                @endforeach
                             </div><!-- end meta -->
 
                             <div class="post-sharing">
@@ -145,16 +154,18 @@
                             </div><!-- end row -->
                         </div><!-- end author-box -->
 
+                        @if($related->isNotEmpty())
                         <hr class="invis1">
 
                         <div class="custombox clearfix">
                             <h4 class="small-title">You may also like</h4>
                             <div class="row">
+                            @foreach($related as $item)
                                 <div class="col-lg-6">
                                     <div class="blog-box">
                                         <div class="post-media">
-                                            <a href="tech-single.html" title="">
-                                                <img src="upload/tech_menu_04.jpg" alt="" class="img-fluid">
+                                            <a href="{{ $item->getLink() }}" title="">
+                                                <img src="{{ $item->getThumbnail() }}" alt="" class="img-fluid">
                                                 <div class="hovereffect">
                                                     <span class=""></span>
                                                 </div><!-- end hover -->
@@ -162,37 +173,19 @@
                                         </div><!-- end media -->
                                         <div class="blog-meta">
                                             <h4>
-                                                <a href="tech-single.html" title="">We are guests of ABC Design Studio</a>
+                                                <a href="{{ $item->getLink() }}" title="">{{ $item->getTitle() }}</a>
                                             </h4>
 
-                                            <small><a href="blog-category-01.html" title="">Trends</a></small>
-                                            <small><a href="blog-category-01.html" title="">21 July, 2017</a></small>
+                                            <small><a href="" title="">Trends</a></small>
+                                            <small><a href="" title="">{{ $item->getCreatedDate() }}</a></small>
                                         </div>
                                         <!-- end meta -->
                                     </div><!-- end blog-box -->
                                 </div><!-- end col -->
-
-                                <div class="col-lg-6">
-
-                                    <div class="blog-box">
-                                        <div class="post-media">
-                                            <a href="tech-single.html" title="">
-                                                <img src="" alt="" class="img-fluid">
-                                                <div class="hovereffect">
-                                                    <span class=""></span>
-                                                </div><!-- end hover -->
-                                            </a>
-                                        </div>
-                                        <!-- end media -->
-                                        <div class="blog-meta">
-                                            <h4><a href="tech-single.html" title="">Nostalgia at work with family</a></h4>
-                                            <small><a href="blog-category-01.html" title="">News</a></small>
-                                            <small><a href="blog-category-01.html" title="">20 July, 2017</a></small>
-                                        </div><!-- end meta -->
-                                    </div><!-- end blog-box -->
-                                </div><!-- end col -->
+                            @endforeach
                             </div><!-- end row -->
                         </div><!-- end custom-box -->
+                        @endif
 
                         <hr class="invis1">
 
@@ -201,6 +194,7 @@
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="comments-list">
+
                                         <div class="media">
                                             <a class="media-left" href="#">
                                                 <img src="upload/author.jpg" alt="" class="rounded-circle">
@@ -211,19 +205,7 @@
                                                 <a href="#" class="btn btn-primary btn-sm">Reply</a>
                                             </div>
                                         </div>
-                                        <div class="media">
-                                            <a class="media-left" href="#">
-                                                <img src="upload/author_01.jpg" alt="" class="rounded-circle">
-                                            </a>
-                                            <div class="media-body">
 
-                                                <h4 class="media-heading user_name">Baltej Singh <small>5 days ago</small></h4>
-
-                                                <p>Drinking vinegar stumptown yr pop-up artisan sunt. Deep v cliche lomo biodiesel Neutra selfies. Shorts fixie consequat flexitarian four loko tempor duis single-origin coffee. Banksy, elit small.</p>
-
-                                                <a href="#" class="btn btn-primary btn-sm">Reply</a>
-                                            </div>
-                                        </div>
                                         <div class="media last-child">
                                             <a class="media-left" href="#">
                                                 <img src="upload/author_02.jpg" alt="" class="rounded-circle">
@@ -247,11 +229,23 @@
                             <h4 class="small-title">Leave a Reply</h4>
                             <div class="row">
                                 <div class="col-lg-12">
-                                    <form class="form-wrapper">
-                                        <input type="text" class="form-control" placeholder="Your name">
-                                        <input type="text" class="form-control" placeholder="Email address">
-                                        <input type="text" class="form-control" placeholder="Website">
-                                        <textarea class="form-control" placeholder="Your comment"></textarea>
+                                    @if ($errors->any())
+                                        <div class="alert alert-danger">
+                                            <ul>
+                                                @foreach ($errors->all() as $error)
+                                                    <li>{{ $error }}</li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    @endif
+
+                                    <form action="" class="form-wrapper" method="post">
+                                        @csrf
+
+                                        <input type="text" name="name" class="form-control" placeholder="Your name">
+                                        <input type="text" name="email" class="form-control" placeholder="Email address">
+                                        <input type="text" name="website" class="form-control" placeholder="Website">
+                                        <textarea class="form-control" name="content" placeholder="Your comment"></textarea>
                                         <button type="submit" class="btn btn-primary">Submit Comment</button>
                                     </form>
                                 </div>
