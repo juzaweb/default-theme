@@ -12,7 +12,6 @@ namespace Theme\Widgets;
 
 class BannerWidget extends \Juzaweb\Abstracts\Widget
 {
-
     /**
      * Creating widget Backend
      *

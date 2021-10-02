@@ -15,6 +15,6 @@
             <small><a href="" title="">{{ $post->getCreatedDate() }}</a></small>
             <small><a href="" title="">by {{ $post->getCreatedByName() }}</a></small>
             <small><a href="" title=""><i class="fa fa-eye"></i> {{ $post->getViews() }}</a></small>
-        </div><!-- end meta -->
-    </div><!-- end blog-box -->
-</div><!-- end col -->
+        </div>
+    </div>
+</div>

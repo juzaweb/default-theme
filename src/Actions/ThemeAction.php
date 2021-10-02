@@ -26,12 +26,22 @@ class ThemeAction extends Action
 
         $this->addAction(Action::JUZAWEB_INIT_ACTION, [
             $this,
+            'registerTemplates'
+        ]);
+
+        $this->addAction(Action::JUZAWEB_INIT_ACTION, [
+            $this,
             'registerSidebars'
         ]);
 
         $this->addAction(Action::WIDGETS_INIT, [
             $this,
             'registerWidgets'
+        ]);
+
+        $this->addAction(Action::FRONTEND_CALL_ACTION, [
+            $this,
+            'registerStyles'
         ]);
     }
 
@@ -65,5 +75,24 @@ class ThemeAction extends Action
             'label' => trans('theme::content.sidebar_banner'),
             'block' => new BannerBlock()
         ]);
+    }
+
+    public function registerTemplates()
+    {
+        HookAction::registerThemeTemplate('home', [
+            'name' => trans('juzaweb::app.home'),
+            'view' => 'templates.home'
+        ]);
+
+        HookAction::registerThemeTemplate('post', [
+            'name' => trans('juzaweb::app.post'),
+            'view' => 'templates.post'
+        ]);
+    }
+
+    public function registerStyles()
+    {
+        HookAction::enqueueFrontendScript('main', 'assets/js/main.js');
+        HookAction::enqueueFrontendStyle('main', 'assets/css/main.css');
     }
 }
