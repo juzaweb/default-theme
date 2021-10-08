@@ -189,7 +189,7 @@
 
                         <hr class="invis1">
 
-                        {{ $post->commentTemplate('theme::components.comments') }}
+                        {{ comment_template($post, 'theme::components.comments') }}
 
 
                         <hr class="invis1">
